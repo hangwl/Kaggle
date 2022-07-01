@@ -1,6 +1,6 @@
-source: https://www.kaggle.com/learn/intro-to-machine-learning
+Source: https://www.kaggle.com/learn/intro-to-machine-learning
 
-data: https://www.kaggle.com/competitions/home-data-for-ml-course/data
+Data: https://www.kaggle.com/competitions/home-data-for-ml-course/data
 
 Lessons:
 1. How Models Work
