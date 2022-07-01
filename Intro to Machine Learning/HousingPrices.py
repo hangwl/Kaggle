@@ -12,7 +12,7 @@ It generally has much better predictive accuracy than a single decision tree and
 """
 
 # Load data and separate target
-iowa_file_path = r"C:\Users\HangWei\OneDrive\Desktop\VSC\Kaggle\Intro_to_Machine_Learning\home-data-for-ml-course (1)\train.csv"
+iowa_file_path = r"C:\Users\HangWei\OneDrive\Desktop\VSC\Kaggle\Data Sources\Housing_Prices_Competition\train.csv"
 home_data = pd.read_csv(iowa_file_path)
 
 #print(home_data.columns) # View data columns
@@ -54,7 +54,7 @@ print("MAE for Random Forest Model: {:,.0f}".format(rf_model_full_mae))
 Lastly, we apply model to make predictions on test data
 """
 
-test_data_path = r"C:\Users\HangWei\OneDrive\Desktop\VSC\Kaggle\Intro_to_Machine_Learning\home-data-for-ml-course (1)\test.csv"
+test_data_path = r"C:\Users\HangWei\OneDrive\Desktop\VSC\Kaggle\Data Sources\Housing_Prices_Competition\test.csv"
 test_data = pd.read_csv(test_data_path)
 
 test_X = test_data[features]
