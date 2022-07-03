@@ -11,6 +11,7 @@ Pipelines have benefits that include:
 """
 
 import pandas as pd
+from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 
 X = pd.read_csv(r"C:\Users\HangWei\OneDrive\Desktop\VSC\Kaggle\Data Sources\Housing_Prices_Competition\train.csv", index_col='Id')
@@ -34,4 +35,59 @@ X_train = X_train[my_cols].copy()
 X_val = X_val[my_cols].copy()
 X_test = X_test[my_cols].copy()
 
-print(X_train.head())
+#print(X_train.head())
+
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+
+# Preprocessing for Numerical Data
+numerical_transformer = SimpleImputer(strategy='constant')
+
+# Preprocessing for Categorical Data
+categorical_transformer = Pipeline(
+    steps=[
+        ('imputer', SimpleImputer(strategy='constant')), #'constant' yields slightly better MAE than 'most_frequent' in this case
+        ('onehot', OneHotEncoder(handle_unknown='ignore'))
+    ]
+)
+
+# Bundle preprocessing for numerical and categorical data
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numerical_transformer, numerical_cols),
+        ('cat', categorical_transformer, categorical_cols)
+    ]
+)
+
+# Define Model
+model = RandomForestRegressor(n_estimators=100, random_state=0)
+
+# Bundle preprocessing and modeling code in pipeline
+my_pipeline = Pipeline(
+    steps=[
+        ('preprocessor', preprocessor),
+        ('model', model)
+    ]
+)
+
+# Preprocessing of Training Data, Fit Model
+my_pipeline.fit(X_train, y_train)
+
+# Preprocessing of validation data, get predictions
+preds = my_pipeline.predict(X_val)
+
+print('MAE:', mean_absolute_error(y_val, preds))
+
+# Preprocessing of Test Data, Fit Model
+preds_test = my_pipeline.predict(X_test)
+
+import os
+output = pd.DataFrame({'Id': X_test.index,
+                       'SalePrice': preds_test})
+file_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(file_dir, 'lesson_4_test_predictions.csv')
+output.to_csv(file_path, index=False)
