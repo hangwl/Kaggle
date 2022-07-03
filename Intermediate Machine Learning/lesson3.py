@@ -100,3 +100,35 @@ print(sorted(d.items(), key=lambda x: x[1]))
 
 # The output shows the number of unique values in each respective column with categorical data
 # We refer to the number of unique entries as the cardinality of that categorical variable.
+
+# For large datasets with many rows, one-hot encoding can greatly expand the size of the dataset.
+# So, high cardinality columns are either dropped, ordinal encoding is used instead.
+
+# Columns that will be one-hot encoded
+low_cardinality_cols = [col for col in object_cols if X_train[col].nunique() < 10]
+
+# Columns that will be dropped
+high_cardinality_cols = list(set(object_cols)-set(low_cardinality_cols))
+
+print('Categorical columns that will be one-hot encoded:', low_cardinality_cols)
+print('\nCategorical columns that will be dropped from the dataset:', high_cardinality_cols)
+
+# Approach 3 - One-hot Encoding
+
+from sklearn.preprocessing import OneHotEncoder
+
+OH_encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
+OH_cols_train = pd.DataFrame(OH_encoder.fit_transform(X_train[low_cardinality_cols]))
+OH_cols_val = pd.DataFrame(OH_encoder.transform(X_val[low_cardinality_cols]))
+# One-hot encoding removed index; put it back
+OH_cols_train.index = X_train.index
+OH_cols_val.index = X_val.index
+# Remove categorical columns (will replace with one-hot encoding)
+num_X_train = X_train.drop(object_cols, axis=1)
+num_X_val = X_val.drop(object_cols, axis=1)
+# Add one-hot encoded columns to numerical features
+OH_X_train = pd.concat([num_X_train, OH_cols_train], axis=1)
+OH_X_val = pd.concat([num_X_val, OH_cols_val], axis=1)
+
+print(f"MAE from Approach 3 (One-Hot Encoding): {score_dataset(OH_X_train, OH_X_val, y_train, y_val)}")
+
