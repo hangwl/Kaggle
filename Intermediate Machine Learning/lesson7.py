@@ -22,7 +22,7 @@ i.e. leakage causes a model to be accurate only until the before the decision ma
     To prevent this, if our validation is based on a simple train_test_split, exclude the validation from any type of fitting, including the fitting of preprocessing steps.
     eg. preprocessing (using a imputer) before calling train_test_split
 
-We want to identify potential leaks and drop them.
+We want to identify potential leaks and drop them if necessary depending on the context.
 
 Refer to https://www.kaggle.com/code/alexisbcook/data-leakage for examples
 """
